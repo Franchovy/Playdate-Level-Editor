@@ -1,0 +1,6 @@
+name=MySampleGame
+author=Franchovy
+description=When all you have is a ton of bricks, everything looks like a paddle.
+bundleID=io.Franchovy.games
+version=1.0
+buildNumber=1
