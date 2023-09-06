@@ -1,2 +1,2 @@
 import "menu"
-import "game"
+import "game/game"
