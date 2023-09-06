@@ -9,18 +9,15 @@ end
 
 main()
 
-local gameMode = false
+local game;
 
 function playdate.update()
 	sprite.update()
 	
-	if not gameMode and playdate.buttonIsPressed(playdate.kButtonA) then
+	if game == nil and playdate.buttonIsPressed(playdate.kButtonA) then
 		menu:remove()
+		
+		game = Game.new()
 		game:add()
-		game.addSelf()
-	end
-	
-	if gameMode then
-		game.update()
 	end
 end

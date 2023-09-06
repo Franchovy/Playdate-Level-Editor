@@ -2,8 +2,6 @@ import "playdate"
 
 class('Cursor').extends(sprite);
 
-cursor = nil;
-
 function Cursor.new(x, y)
 	return Cursor(x, y)
 end

@@ -2,30 +2,34 @@ import "playdate"
 import "grid"
 import "game/game"
 
-game = sprite.new()
-local cursor;
+class("Game").extends(sprite)
 
-function game.addSelf() 
-	cursor = Cursor.new()
-	
-	cursor:add()
-	cursor:moveTo(makeGridPosition(3, 3))
+function Game.new()
+	return Game()
 end
 
-function game.update()
+function Game:init() 
+	Game.super.init(self)
+	
+	self.cursor = Cursor.new()
+	self.cursor:add()
+	self.cursor:moveTo(makeGridPosition(3, 3))
+end
+
+function Game:update()
 	if playdate.buttonJustPressed(playdate.kButtonLeft) then
-		cursor:moveGrid(-1, 0)
+		self.cursor:moveGrid(-1, 0)
 	end
 	
 	if playdate.buttonJustPressed(playdate.kButtonRight) then
-		cursor:moveGrid(1, 0)
+		self.cursor:moveGrid(1, 0)
 	end
 	
 	if playdate.buttonJustPressed(playdate.kButtonUp) then
-		cursor:moveGrid(0, -1)
+		self.cursor:moveGrid(0, -1)
 	end
 	
 	if playdate.buttonJustPressed(playdate.kButtonDown) then
-		cursor:moveGrid(0, 1)
+		self.cursor:moveGrid(0, 1)
 	end
 end
