@@ -9,10 +9,24 @@ end
 
 main()
 
+local gameObjects = {};
 local game;
 
 function playdate.update()
 	sprite.update()
+	
+	if game ~= nil then
+		-- Adding GameObjects
+		
+		if playdate.buttonJustPressed(playdate.kButtonA) then
+			local gameObject = GameObject.new()
+			table.insert(gameObjects, gameObject)
+			
+			gameObject:add()
+			gameObject:moveTo(game.cursor:getPosition())
+		end
+		
+	end
 	
 	if game == nil and playdate.buttonIsPressed(playdate.kButtonA) then
 		menu:remove()

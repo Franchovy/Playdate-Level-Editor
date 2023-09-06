@@ -17,6 +17,9 @@ function Game:init()
 end
 
 function Game:update()
+	
+	-- Movement
+	
 	if playdate.buttonJustPressed(playdate.kButtonLeft) then
 		self.cursor:moveGrid(-1, 0)
 	end
