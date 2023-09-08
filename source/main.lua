@@ -1,16 +1,22 @@
 import "playdate"
 import "sprites/sprites"
-
-function main()
-	menu.drawSelf()
-	menu:add()
-	menu:moveTo(200, 120)
-end
-
-main()
+import "level/level"
 
 local gameObjects = {};
 local game;
+
+function main()
+	-- Create main menu sprite
+	
+	menu.drawSelf()
+	menu:add()
+	menu:moveTo(200, 120)
+	
+	-- Playdate Menu options
+	
+	local fileName = "level.json"
+	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(fileName, gameObjects) end)
+end
 
 function playdate.update()
 	sprite.update()
@@ -35,3 +41,5 @@ function playdate.update()
 		game:add()
 	end
 end
+
+main()
