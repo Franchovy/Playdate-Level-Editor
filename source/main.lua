@@ -16,6 +16,14 @@ function main()
 	
 	local fileName = "level.json"
 	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(fileName, gameObjects) end)
+	
+	-- Get files
+	
+	local files = getLevelFiles()
+	print("Files: ")
+	for _, fileName in pairs(files) do
+		print(fileName)
+	end
 end
 
 function playdate.update()
