@@ -2,7 +2,11 @@ import "playdate"
 import "constants"
 
 function getLevelFiles()
-	return playdate.file.listFiles(pathLevels)
+	if playdate.file.exists(pathLevels) and playdate.file.isdir(pathLevels) then
+		return playdate.file.listFiles(pathLevels)
+	end
+	
+	return {}
 end
 
 function importLevel(fileName)

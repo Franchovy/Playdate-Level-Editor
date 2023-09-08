@@ -35,18 +35,18 @@ function menuScene.init()
 	for _, fileName in pairs(files) do
 		print(fileName)
 	end
-	
-	-- Playdate Menu options
-	
-	local fileName = "level.json"
-	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(fileName, gameObjects) end)
-	
 end
 
 function menuScene.deinit()
 	menu:remove()
 	menuOptions:remove()
 	
+	menu = nil
+	menuOptions = nil
+
+	menuScene.shouldTransition = false
+	menuScene.selectedFileName = nil
+
 	menuScene.isInitialized = false
 end
 

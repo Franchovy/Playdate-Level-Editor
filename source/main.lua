@@ -15,19 +15,24 @@ function playdate.update()
 	
 	if gameScene.isInitialized then
 		gameScene.update()
+		
+		if gameScene.shouldQuit then
+			gameScene.deinit()
+			menuScene.init()
+		end
 	end
 	
 	if menuScene.isInitialized then
-		
 		menuScene.update()
 		
 		-- Set Scene
 		
 		if menuScene.shouldTransition then
+			local fileName = menuScene.selectedFileName
+			
 			menuScene.deinit()
 			gameScene.init()
 			
-			local fileName = menuScene.selectedFileName
 			if fileName ~= nil then
 				gameScene.loadFromFile(fileName)
 			end

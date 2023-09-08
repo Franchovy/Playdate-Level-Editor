@@ -16,6 +16,11 @@ function Game:init()
 	self.cursor:moveTo(makeGridPosition(3, 3))
 end
 
+function Game:deinit()
+	self.cursor:remove()
+	self.cursor = nil
+end
+
 function Game:update()
 	
 	-- Movement
