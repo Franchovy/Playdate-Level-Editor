@@ -8,22 +8,25 @@ function exportLevel(name, gameObjects)
 	
 	local exportData = {}
 	for _, gameObject in pairs(gameObjects) do
-		local itemPosition = getGridPosition(gameObject:getPosition())
-		table.insert(exportData, itemPosition)
+		local itemPositionX, itemPositionY = getGridPosition(gameObject:getPosition())
+		local itemData = {}
+		itemData["x"] = itemPositionX
+		itemData["y"] = itemPositionY
+		table.insert(exportData, itemData)
 	end
 	
-	local pathExport = directoryExport.. "/".. name
-	print("Exporting to file: ".. pathExport.. "...")
+	local path = pathLevels.. "/".. name
+	print("Exporting to file: ".. path.. "...")
 	
-	if not playdate.file.isdir(directoryExport) then
-		playdate.file.mkdir(directoryExport)
+	if not playdate.file.isdir(pathLevels) then
+		playdate.file.mkdir(pathLevels)
 	end
 	
-	if playdate.file.exists(pathExport) then
+	if playdate.file.exists(path) then
 		print("File already exists! Overwriting...")
 	end
 	
-	json.encodeToFile(pathExport, exportData)
+	json.encodeToFile(path, exportData)
 	
-	print("Exported to file: ".. pathExport)
+	print("Exported to file.")
 end

@@ -5,31 +5,42 @@ import "level/level"
 local gameObjects = {};
 local game;
 
+local files;
+
 function main()
 	-- Create main menu sprite
 	
 	menu.drawSelf()
+	menuOptions.drawSelf()
 	menu:add()
-	menu:moveTo(200, 120)
+	menuOptions:add()
+	menu:setCenter(0, 0)
+	menu:moveTo(0, 0)
+	menuOptions:setCenter(0, 0)
+	menuOptions:moveTo(0, 0)
+	
+	-- Get files
+	
+	files = getLevelFiles()
+	
+	print("Files: ")
+	for _, fileName in pairs(files) do
+		print(fileName)
+	end
 	
 	-- Playdate Menu options
 	
 	local fileName = "level.json"
 	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(fileName, gameObjects) end)
 	
-	-- Get files
-	
-	local files = getLevelFiles()
-	print("Files: ")
-	for _, fileName in pairs(files) do
-		print(fileName)
-	end
 end
 
 function playdate.update()
 	sprite.update()
 	
 	if game ~= nil then
+		-- TODO: Move to GameScene
+		
 		-- Adding GameObjects
 		
 		if playdate.buttonJustPressed(playdate.kButtonA) then
@@ -39,10 +50,20 @@ function playdate.update()
 			gameObject:add()
 			gameObject:moveTo(game.cursor:getPosition())
 		end
-		
 	end
 	
 	if game == nil and playdate.buttonIsPressed(playdate.kButtonA) then
+		-- TODO: Move to MenuScene
+		
+		local selectedFile = files[1]
+		if selectedFile ~= nil then
+			print("Loading file: ".. selectedFile)
+		else
+			print("No file selected.")
+		end
+		
+		local gameObjects = importLevel(selectedFile)
+		
 		menu:remove()
 		
 		game = Game.new()
