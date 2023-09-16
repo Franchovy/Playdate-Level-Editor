@@ -31,10 +31,10 @@ function playdate.update()
 			local fileName = menuScene.selectedFileName
 			
 			menuScene.deinit()
-			editorScene.init()
+			editorScene.init(game)
 			
 			if fileName ~= nil then
-				editorScene.loadFromFile(game, fileName)
+				editorScene.loadFromFile(fileName)
 			end
 		end
 	end

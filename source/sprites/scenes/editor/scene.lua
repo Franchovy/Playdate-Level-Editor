@@ -1,17 +1,25 @@
 import "editor"
 import "gameObject"
-import "utils/file" -- TODO: change to import "utils/import"
+import "utils/config"
+import "utils/file"
 
 editorScene = {}
 editorScene.isInitialized = false
 editorScene.shouldQuit = false
 
+local items = {};
+local currentItem = nil;
 local levelConfig = {};
 local gameObjects = {};
 local editor;
 
 function editorScene.init(game)
-	editor = Editor.new(game)
+	editorScene.game = game
+	
+	local gameConfig, itemsConfig = loadGameConfig(game)
+	items = itemsConfig
+	
+	editor = Editor.new(gameConfig)
 	editor:add()
 	
 	-- Playdate Menu options
@@ -23,6 +31,13 @@ function editorScene.init(game)
 	--
 	
 	editorScene.isInitialized = true
+	
+	if items == nil or #items == 0 then
+		print("Error: no definitions in items config!")
+		return
+	end
+	
+	currentItem = items[1]
 end
 
 function editorScene.deinit()
@@ -47,8 +62,8 @@ function editorScene.deinit()
 	editorScene.isInitialized = false
 end
 
-function editorScene.loadFromFile(game, fileName)
-	local fileData = importLevel(game, fileName)
+function editorScene.loadFromFile(fileName)
+	local fileData = importLevel(editorScene.game, fileName)
 	local objectsLoaded = {}
 	
 	levelConfig = { levelSize = fileData.levelSize, gridSize = fileData }
@@ -67,7 +82,7 @@ function editorScene.update()
 	-- Adding GameObjects
 	
 	if playdate.buttonJustPressed(playdate.kButtonA) then
-		local gameObject = GameObject.new()
+		local gameObject = GameObject.new(currentItem)
 		table.insert(gameObjects, gameObject)
 		
 		gameObject:add()

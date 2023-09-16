@@ -3,11 +3,11 @@ import "grid"
 
 class("GameObject").extends(sprite)
 
-function GameObject.new(config)
-	return GameObject(config)
+function GameObject.new(itemConfig)
+	return GameObject(itemConfig)
 end
 
-function GameObject:init(config)
+function GameObject:init(itemConfig)
 	GameObject.super.init(self)
 	
 	local gridSize = grid.getSize()
@@ -21,10 +21,14 @@ function GameObject:init(config)
 	
 	-- Set properties
 	
-	self.id = config.id
-	self.config = config.config
-	self.assetName = config.assetName
-	self.size = config.size
+	self.id = itemConfig.id
+	self.config = itemConfig.config
+	self.size = itemConfig.size
 	
-	self:moveTo(grid.makeGridPosition(config.position.x, config.position.y))
+	self:moveTo(grid.makeGridPosition(itemConfig.position.x, itemConfig.position.y))
+	self:setImageToAsset(itemConfig.assetName)
+end
+
+function GameObject:setImageToAsset(assetPath)
+	-- TODO: Set file in data folder to asset
 end
