@@ -1,2 +1,2 @@
-import "game/scene"
+import "editor/scene"
 import "menu/scene"

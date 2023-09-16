@@ -25,4 +25,6 @@ function GameObject:init(config)
 	self.config = config.config
 	self.assetName = config.assetName
 	self.size = config.size
+	
+	self:moveTo(grid.makeGridPosition(config.position.x, config.position.y))
 end

@@ -1,39 +1,39 @@
-import "game"
+import "editor"
 import "gameObject"
-import "level/level" -- TODO: change to import "utils/import"
+import "utils/file" -- TODO: change to import "utils/import"
 
-gameScene = {}
-gameScene.isInitialized = false
-gameScene.shouldQuit = false
+editorScene = {}
+editorScene.isInitialized = false
+editorScene.shouldQuit = false
 
 local levelConfig = {};
 local gameObjects = {};
-local game;
+local editor;
 
-function gameScene.init()
-	game = Game.new()
-	game:add()
+function editorScene.init(game)
+	editor = Editor.new(game)
+	editor:add()
 	
 	-- Playdate Menu options
 	
 	local fileName = "level.json"
-	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(fileName, gameObjects) end)
-	playdate.getSystemMenu():addMenuItem("Main Menu", function() gameScene.shouldQuit = true end)
+	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(game, fileName, gameObjects) end)
+	playdate.getSystemMenu():addMenuItem("Main Menu", function() editorScene.shouldQuit = true end)
 	
 	--
 	
-	gameScene.isInitialized = true
+	editorScene.isInitialized = true
 end
 
-function gameScene.deinit()
-	game:deinit()
-	game:remove()
+function editorScene.deinit()
+	editor:deinit()
+	editor:remove()
 	
 	for _, object in pairs(gameObjects) do
 		object:remove()
 	end
 	
-	game = nil
+	editor = nil
 	gameObjects = {}
 	
 	local menuItems = playdate.getSystemMenu():getMenuItems()
@@ -42,29 +42,28 @@ function gameScene.deinit()
 		playdate.getSystemMenu():removeMenuItem(item)
 	end
 	
-	gameScene.shouldQuit = false
+	editorScene.shouldQuit = false
 	
-	gameScene.isInitialized = false
+	editorScene.isInitialized = false
 end
 
-function gameScene.loadFromFile(fileName)
-	local fileData = importLevel(fileName)
+function editorScene.loadFromFile(game, fileName)
+	local fileData = importLevel(game, fileName)
 	local objectsLoaded = {}
 	
 	levelConfig = { levelSize = fileData.levelSize, gridSize = fileData }
 	
-	for _, object in pairs(fileData.gameObjects) do
+	for _, object in pairs(fileData.objects) do
 		local gameObject = GameObject.new(object)
 		table.insert(objectsLoaded, gameObject)
 		
 		gameObject:add()
-		gameObject:moveTo(makeGridPosition(object.x, object.y))
 	end
 	
 	gameObjects = objectsLoaded
 end
 
-function gameScene.update()
+function editorScene.update()
 	-- Adding GameObjects
 	
 	if playdate.buttonJustPressed(playdate.kButtonA) then

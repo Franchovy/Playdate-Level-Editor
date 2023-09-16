@@ -2,14 +2,14 @@ import "playdate"
 import "cursor"
 import "grid"
 
-class("Game").extends(sprite)
+class("Editor").extends(sprite)
 
-function Game.new(config)
-	return Game(config)
+function Editor.new(config)
+	return Editor(config)
 end
 
-function Game:init(config) 
-	Game.super.init(self)
+function Editor:init(config) 
+	Editor.super.init(self)
 	
 	if config ~= nil then
 		self.levelSize = config.levelSize
@@ -23,12 +23,12 @@ function Game:init(config)
 	self.cursor:moveTo(grid.makeGridPosition(3, 3))
 end
 
-function Game:deinit()
+function Editor:deinit()
 	self.cursor:remove()
 	self.cursor = nil
 end
 
-function Game:update()
+function Editor:update()
 	
 	-- Movement
 	

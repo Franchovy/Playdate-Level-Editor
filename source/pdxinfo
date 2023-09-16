@@ -1,6 +1,6 @@
-name=MySampleGame
+name=Playdate Level Designer
 author=Franchovy
 description=When all you have is a ton of bricks, everything looks like a paddle.
-bundleID=io.Franchovy.games
+bundleID=io.Franchovy.leveldesigner
 version=1.0
 buildNumber=1

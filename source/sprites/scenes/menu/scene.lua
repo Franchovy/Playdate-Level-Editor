@@ -1,6 +1,6 @@
-import "menu"
+import "background"
 import "menuOptions"
-import "level/level"
+import "utils/file"
 
 menuScene = {}
 menuScene.isInitialized = false
@@ -8,40 +8,44 @@ menuScene.isInitialized = false
 menuScene.shouldTransition = false
 menuScene.selectedFileName = nil
 
-local menu
+local game = "wheelrunner"
+
+local background
 local menuOptions
 local files
 
 function menuScene.init()
-	menu = Menu.new()
 	menuOptions = MenuOptions.new()
 	
-	menu:add()
 	menuOptions:add()
-	
-	menu:setCenter(0, 0)
 	menuOptions:setCenter(0, 0)
-	
-	menu:moveTo(0, 0)
 	menuOptions:moveTo(0, 0)
 	
 	menuScene.isInitialized = true
 	
-	-- Get files
+	background = graphics.sprite.setBackgroundDrawingCallback(function()
+		drawBackground()
+	end)
 	
-	files = getLevelFiles()
+	-- Get files based on game
 	
-	print("Files: ")
-	for _, fileName in pairs(files) do
-		print(fileName)
+	files = getLevelFiles(game)
+	
+	if files == nil then
+		print("No Files found for game.")
+	else 
+		print("Files: ")
+		for _, fileName in pairs(files) do
+			print(fileName)
+		end
 	end
 end
 
 function menuScene.deinit()
-	menu:remove()
+	background:remove()
 	menuOptions:remove()
 	
-	menu = nil
+	background = nil
 	menuOptions = nil
 
 	menuScene.shouldTransition = false
@@ -51,11 +55,13 @@ function menuScene.deinit()
 end
 
 function menuScene.update()
+	
 	local buttonPressedA = playdate.buttonIsPressed(playdate.kButtonA)
 	local buttonPressedB = playdate.buttonIsPressed(playdate.kButtonB)
 	
 	if buttonPressedA or buttonPressedB then
 		menuScene.shouldTransition = true
+		menuScene.game = game
 	end
 	
 	if buttonPressedA then

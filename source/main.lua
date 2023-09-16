@@ -1,7 +1,6 @@
 import "playdate"
-import "level/level"
+import "utils/file"
 import "sprites/sprites"
-
 
 function main()
 
@@ -13,11 +12,11 @@ end
 function playdate.update()
 	sprite.update()
 	
-	if gameScene.isInitialized then
-		gameScene.update()
+	if editorScene.isInitialized then
+		editorScene.update()
 		
-		if gameScene.shouldQuit then
-			gameScene.deinit()
+		if editorScene.shouldQuit then
+			editorScene.deinit()
 			menuScene.init()
 		end
 	end
@@ -28,13 +27,14 @@ function playdate.update()
 		-- Set Scene
 		
 		if menuScene.shouldTransition then
+			local game = menuScene.game
 			local fileName = menuScene.selectedFileName
 			
 			menuScene.deinit()
-			gameScene.init()
+			editorScene.init()
 			
 			if fileName ~= nil then
-				gameScene.loadFromFile(fileName)
+				editorScene.loadFromFile(game, fileName)
 			end
 		end
 	end
