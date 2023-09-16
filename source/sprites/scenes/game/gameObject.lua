@@ -3,13 +3,14 @@ import "grid"
 
 class("GameObject").extends(sprite)
 
-function GameObject.new()
-	return GameObject()
+function GameObject.new(config)
+	return GameObject(config)
 end
 
-function GameObject:init()
+function GameObject:init(config)
 	GameObject.super.init(self)
 	
+	local gridSize = grid.getSize()
 	local image = graphics.image.new(gridSize, gridSize)
 	
 	graphics.pushContext(image)
@@ -17,4 +18,11 @@ function GameObject:init()
 	graphics.popContext()
 	
 	self:setImage(image)
+	
+	-- Set properties
+	
+	self.id = config.id
+	self.config = config.config
+	self.assetName = config.assetName
+	self.size = config.size
 end

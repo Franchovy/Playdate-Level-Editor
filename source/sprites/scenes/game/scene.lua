@@ -6,6 +6,7 @@ gameScene = {}
 gameScene.isInitialized = false
 gameScene.shouldQuit = false
 
+local levelConfig = {};
 local gameObjects = {};
 local game;
 
@@ -50,8 +51,10 @@ function gameScene.loadFromFile(fileName)
 	local fileData = importLevel(fileName)
 	local objectsLoaded = {}
 	
-	for _, object in pairs(fileData) do
-		local gameObject = GameObject.new()
+	levelConfig = { levelSize = fileData.levelSize, gridSize = fileData }
+	
+	for _, object in pairs(fileData.gameObjects) do
+		local gameObject = GameObject.new(object)
 		table.insert(objectsLoaded, gameObject)
 		
 		gameObject:add()

@@ -1,4 +1,5 @@
 import "playdate"
+import "grid"
 
 class('Cursor').extends(sprite);
 
@@ -9,6 +10,7 @@ end
 function Cursor:init(x, y)
 	Cursor.super.init(self)
 	
+	local gridSize = grid.getSize()
 	local image = graphics.image.new(gridSize, gridSize)
 	
 	graphics.pushContext(image)
@@ -21,8 +23,8 @@ function Cursor:init(x, y)
 end
 
 function Cursor:moveGrid(x, y)
-	local positionX, positionY = getGridPosition(self:getPosition())
+	local positionX, positionY = grid.getGridPosition(self:getPosition())
 	positionX += x
 	positionY += y
-	self:moveTo(makeGridPosition(positionX, positionY))
+	self:moveTo(grid.makeGridPosition(positionX, positionY))
 end

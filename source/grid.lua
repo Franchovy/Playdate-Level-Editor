@@ -1,9 +1,19 @@
-gridSize = 24
+grid = {}
 
-function makeGridPosition(x, y)
+local gridSize;
+
+function grid.getSize()
+	return gridSize
+end
+
+function grid.setSize(size)
+	gridSize = size
+end
+
+function grid.makeGridPosition(x, y)
 	return (x * gridSize), (y * gridSize)
 end
 
-function getGridPosition(x, y)
+function grid.getGridPosition(x, y)
 	return (x / gridSize), (y / gridSize)
 end

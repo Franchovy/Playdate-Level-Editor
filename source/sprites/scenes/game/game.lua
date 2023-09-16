@@ -4,16 +4,23 @@ import "grid"
 
 class("Game").extends(sprite)
 
-function Game.new()
-	return Game()
+function Game.new(config)
+	return Game(config)
 end
 
-function Game:init() 
+function Game:init(config) 
 	Game.super.init(self)
+	
+	if config ~= nil then
+		self.levelSize = config.levelSize
+		grid.setSize(config.gridSize)
+	else
+		grid.setSize(defaultGridSize)
+	end
 	
 	self.cursor = Cursor.new()
 	self.cursor:add()
-	self.cursor:moveTo(makeGridPosition(3, 3))
+	self.cursor:moveTo(grid.makeGridPosition(3, 3))
 end
 
 function Game:deinit()
