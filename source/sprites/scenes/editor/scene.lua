@@ -6,6 +6,7 @@ import "utils/file"
 editorScene = {}
 editorScene.isInitialized = false
 editorScene.shouldQuit = false
+editorScene.game = nil
 
 local items = {};
 local currentItem = nil;
@@ -82,7 +83,7 @@ function editorScene.update()
 	-- Adding GameObjects
 	
 	if playdate.buttonJustPressed(playdate.kButtonA) then
-		local gameObject = GameObject.new(currentItem)
+		local gameObject = GameObject.new(editorScene.game, currentItem)
 		table.insert(gameObjects, gameObject)
 		
 		gameObject:add()
