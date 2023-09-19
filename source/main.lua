@@ -27,11 +27,11 @@ function playdate.update()
 		-- Set Scene
 		
 		if menuScene.shouldTransition then
-			local game = menuScene.game
+			local gameId = menuScene.game
 			local fileName = menuScene.selectedFileName
 			
 			menuScene.deinit()
-			editorScene.init(game)
+			editorScene.init(gameId)
 			
 			if fileName ~= nil then
 				editorScene.loadFromFile(fileName)

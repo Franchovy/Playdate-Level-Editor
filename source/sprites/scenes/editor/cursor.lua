@@ -22,9 +22,13 @@ function Cursor:init(x, y)
 	self:setImage(image)
 end
 
-function Cursor:moveGrid(x, y)
+function Cursor:moveByGrid(x, y)
 	local positionX, positionY = grid.getGridPosition(self:getPosition())
 	positionX += x
 	positionY += y
 	self:moveTo(grid.makeGridPosition(positionX, positionY))
+end
+
+function Cursor:getPositionGrid()
+	return grid.getGridPosition(self:getPosition())
 end

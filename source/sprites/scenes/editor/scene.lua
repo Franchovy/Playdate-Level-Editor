@@ -1,3 +1,4 @@
+import "currentGame"
 import "editor"
 import "gameObject"
 import "utils/config"
@@ -6,7 +7,6 @@ import "utils/file"
 editorScene = {}
 editorScene.isInitialized = false
 editorScene.shouldQuit = false
-editorScene.game = nil
 
 local items = {};
 local currentItem = nil;
@@ -14,10 +14,10 @@ local levelConfig = {};
 local gameObjects = {};
 local editor;
 
-function editorScene.init(game)
-	editorScene.game = game
+function editorScene.init(gameId)
+	currentGame.setGameId(gameId)
 	
-	local gameConfig, itemsConfig = loadGameConfig(game)
+	local gameConfig, itemsConfig = loadGameConfig(gameId)
 	items = itemsConfig
 	
 	editor = Editor.new(gameConfig)
@@ -26,7 +26,7 @@ function editorScene.init(game)
 	-- Playdate Menu options
 	
 	local fileName = "level.json"
-	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(game, fileName, gameObjects) end)
+	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(gameId, fileName, editor:getObjects()) end)
 	playdate.getSystemMenu():addMenuItem("Main Menu", function() editorScene.shouldQuit = true end)
 	
 	--
@@ -38,7 +38,8 @@ function editorScene.init(game)
 		return
 	end
 	
-	currentItem = items[1]
+	editor:addItems(items)
+	editor:setItem("platform")
 end
 
 function editorScene.deinit()
@@ -64,29 +65,14 @@ function editorScene.deinit()
 end
 
 function editorScene.loadFromFile(fileName)
-	local fileData = importLevel(editorScene.game, fileName)
-	local objectsLoaded = {}
+	local gameId = currentGame.getGameId()
+	local fileData = importLevel(gameId, fileName)
 	
 	levelConfig = { levelSize = fileData.levelSize, gridSize = fileData }
 	
-	for _, object in pairs(fileData.objects) do
-		local gameObject = GameObject.new(object)
-		table.insert(objectsLoaded, gameObject)
-		
-		gameObject:add()
-	end
-	
-	gameObjects = objectsLoaded
+	editor:loadObjects(fileData.objects)
 end
 
 function editorScene.update()
-	-- Adding GameObjects
-	
-	if playdate.buttonJustPressed(playdate.kButtonA) then
-		local gameObject = GameObject.new(editorScene.game, currentItem)
-		table.insert(gameObjects, gameObject)
-		
-		gameObject:add()
-		gameObject:moveTo(game.cursor:getPosition())
-	end
+
 end
