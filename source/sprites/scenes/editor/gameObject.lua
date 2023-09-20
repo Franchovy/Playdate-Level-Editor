@@ -37,17 +37,18 @@ function GameObject:init(itemConfig, x, y)
 	-- Set Image
 	
 	self:setCenter(0, 0)
-	self:setSize(grid.getGridPosition(self.size.width, self.size.height))
+	self:setSize(grid.makeGridPosition(self.size.width, self.size.height))
 	
 	local assetImage = self:getImageAsset(itemConfig.assetName)
 	if assetImage ~= nil then
 		self:setImage(assetImage)
 	else
 		-- Default image
-		local image = graphics.image.new(gridSize, gridSize)
+		local width, height = self:getSize()
+		local image = graphics.image.new(width, height)
 		
 		graphics.pushContext(image)
-		graphics.fillRect(2, 2, gridSize-4, gridSize-4)
+		graphics.fillRect(2, 2, width-4, height-4)
 		graphics.popContext()
 		
 		self:setImage(image)
