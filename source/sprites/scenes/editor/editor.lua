@@ -27,11 +27,20 @@ function Editor:init(config)
 	self.cursor:setCenter(0, 0)
 	self.cursor:add()
 	self.cursor:moveTo(grid.makeGridPosition(3, 3))
+	
+	self.hintSprite = sprite.new()
+	self.hintSprite:setCenter(0, 0)
+	self.hintSprite:moveTo(25, 25)
+	self.hintSprite:add()
 end
 
 function Editor:deinit()
 	self.cursor:remove()
 	self.cursor = nil
+	
+	self.hintSprite:remove()
+	self.hintSprite = nil
+	
 	self.items = nil
 	self.item = nil
 end
@@ -107,6 +116,10 @@ function Editor:getCurrentItemId()
 end
 
 function Editor:setCurrentItemId(id)
+	local hintTextImage = graphics.imageWithText(id, 150, 25)
+	self.hintSprite:setSize(hintTextImage:getSize())
+	self.hintSprite:setImage(hintTextImage)
+	
 	for _, v in pairs(self.items) do
 		if v.id == id then
 			self.item = v

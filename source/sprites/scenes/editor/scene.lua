@@ -8,6 +8,8 @@ editorScene = {}
 editorScene.isInitialized = false
 editorScene.shouldQuit = false
 
+local hintSprite = nil
+
 local itemIds = {"platform", "killBlock", "coin"}
 local levelConfig = {};
 local editor;
