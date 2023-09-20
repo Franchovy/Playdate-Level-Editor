@@ -1,5 +1,6 @@
 import "playdate"
 import "constants"
+import "currentGame"
 
 local directoryPathNameLevels = "levels"
 
@@ -28,20 +29,43 @@ function importLevel(game, fileName)
 end
 
 function exportLevel(name, gameObjects) 
+	
+	-- Export level and items data
+	
 	if gameObjects == nil then
 		return
 	end
 	
-	local exportData = {}
+	local levelObjects = {}
+	local maxX = 0
+	
 	for _, gameObject in pairs(gameObjects) do
-		local itemPositionX, itemPositionY = getGridPosition(gameObject:getPosition())
-		local itemData = {}
-		itemData["x"] = itemPositionX
-		itemData["y"] = itemPositionY
-		table.insert(exportData, itemData)
+		-- Insert Item Export Data
+		local itemData = gameObject:getExportData()
+		table.insert(levelObjects, itemData)
+		
+		-- Update Max X if necessary
+		local x = gameObject:getPosition()
+		local width = gameObject:getSize()
+		
+		if width + x > maxX then
+			maxX = width + x
+		end
 	end
 	
-	local path = directoryPathNameLevels.."/"..game.."/"..fileName
+	local levelData = {}
+	
+	print("Exporting ".. #levelObjects.. " game objects for level size ".. maxX)
+	
+	levelData.objects = levelObjects
+	levelData.theme = 0
+	levelData.levelSize = maxX + grid.getSize()
+	
+	
+	-- Destination File Path
+	
+	local game = currentGame.getGameId()
+	local path = directoryPathNameLevels.."/"..game.."/"..name
 	print("Exporting to file: ".. path.. "...")
 	
 	if not playdate.file.isdir(game) then
@@ -56,7 +80,7 @@ function exportLevel(name, gameObjects)
 		print("File already exists! Overwriting...")
 	end
 	
-	json.encodeToFile(path, exportData)
+	json.encodeToFile(path, levelData)
 	
 	print("Exported to file.")
 end
