@@ -98,7 +98,11 @@ function Editor:addItems(items)
 	self.items = items
 end
 
-function Editor:setItem(id)
+function Editor:getCurrentItemId()
+	return self.item.id
+end
+
+function Editor:setCurrentItemId(id)
 	for _, v in pairs(self.items) do
 		if v.id == id then
 			self.item = v
