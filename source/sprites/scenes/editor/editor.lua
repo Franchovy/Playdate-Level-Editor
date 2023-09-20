@@ -67,6 +67,16 @@ function Editor:update()
 	end
 end
 
+-- X Offset Movement
+
+function Editor:goTo(offsetX)
+	graphics.setDrawOffset(offsetX, 0)
+end
+
+function Editor:getOffsetX()
+	return graphics.getDrawOffset()
+end
+
 -- Objects Interface
 
 function Editor:loadObjects(objects)

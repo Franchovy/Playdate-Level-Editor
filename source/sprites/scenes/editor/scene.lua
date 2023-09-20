@@ -11,7 +11,6 @@ editorScene.shouldQuit = false
 local items = {};
 local currentItem = nil;
 local levelConfig = {};
-local gameObjects = {};
 local editor;
 
 function editorScene.init(gameId)
@@ -29,9 +28,7 @@ function editorScene.init(gameId)
 	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(gameId, fileName, editor:getObjects()) end)
 	playdate.getSystemMenu():addMenuItem("Main Menu", function() editorScene.shouldQuit = true end)
 	
-	--
-	
-	editorScene.isInitialized = true
+	-- Items
 	
 	if items == nil or #items == 0 then
 		print("Error: no definitions in items config!")
@@ -40,6 +37,10 @@ function editorScene.init(gameId)
 	
 	editor:addItems(items)
 	editor:setItem("platform")
+	
+	-- Set Initialized
+	
+	editorScene.isInitialized = true
 end
 
 function editorScene.deinit()
@@ -74,5 +75,10 @@ function editorScene.loadFromFile(fileName)
 end
 
 function editorScene.update()
-
+	local crankChange = playdate.getCrankTicks(180)
+	
+	-- Set Draw Offset to crank change (in degrees)
+	if crankChange ~= 0 then
+		editor:goTo(editor:getOffsetX() + crankChange)
+	end
 end
