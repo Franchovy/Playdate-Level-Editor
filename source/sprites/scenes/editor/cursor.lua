@@ -10,6 +10,7 @@ end
 function Cursor:init(x, y)
 	Cursor.super.init(self)
 	
+	
 	local gridSize = grid.getSize()
 	local image = graphics.image.new(gridSize, gridSize)
 	
@@ -20,6 +21,7 @@ function Cursor:init(x, y)
 	graphics.popContext()
 	
 	self:setImage(image)
+	self:setCollideRect(0, 0, gridSize, gridSize)
 end
 
 function Cursor:moveByGrid(x, y)

@@ -59,11 +59,15 @@ function Editor:update()
 	-- Add items
 	
 	if playdate.buttonJustPressed(playdate.kButtonA) then
-		local object = GameObject.new(self.item, self.cursor:getPositionGrid())
-		table.insert(self.objects, object)
+		local collisionData = {self.cursor:checkCollisions(self.cursor:getPosition())}
 		
-		object:add()
-		object:moveTo(self.cursor:getPosition())
+		if not (collisionData[4] > 0) then
+			local object = GameObject.new(self.item, self.cursor:getPositionGrid())
+			table.insert(self.objects, object)
+			
+			object:add()
+			object:moveTo(self.cursor:getPosition())
+		end
 	end
 end
 

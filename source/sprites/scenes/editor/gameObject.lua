@@ -12,7 +12,6 @@ function GameObject:init(itemConfig, x, y)
 	GameObject.super.init(self)
 	
 	local gridSize = grid.getSize()
-	
 	-- Set properties
 	
 	self.id = itemConfig.id
@@ -22,6 +21,12 @@ function GameObject:init(itemConfig, x, y)
 	else 
 		self.size = { width = 1, height = 1 }
 	end
+	
+	-- Set sprite properties
+	
+	self:setCenter(0, 0)
+	self:setSize(grid.makeGridPosition(self.size.width, self.size.height))
+	self:setCollideRect(0, 0, self:getSize())
 	
 	-- Set Position 
 	
@@ -35,9 +40,6 @@ function GameObject:init(itemConfig, x, y)
 	end
 	
 	-- Set Image
-	
-	self:setCenter(0, 0)
-	self:setSize(grid.makeGridPosition(self.size.width, self.size.height))
 	
 	local assetImage = self:getImageAsset(itemConfig.assetName)
 	if assetImage ~= nil then
