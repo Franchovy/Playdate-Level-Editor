@@ -47,12 +47,7 @@ function editorScene.deinit()
 	editor:deinit()
 	editor:remove()
 	
-	for _, object in pairs(gameObjects) do
-		object:remove()
-	end
-	
 	editor = nil
-	gameObjects = {}
 	
 	local menuItems = playdate.getSystemMenu():getMenuItems()
 	

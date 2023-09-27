@@ -5,23 +5,30 @@ import "currentGame"
 class("GameObject").extends(sprite)
 
 function GameObject.new(itemConfig, x, y)
-	return GameObject(itemConfig, x, y)
-end
-
-function GameObject.fromConfig(objectConfig)
+	local position = { x = x, y = y }
+	local objectConfig = { position = position }
 	
-	-- TODO: use common initializer variables (id, config, x, y, size...)
-	return GameObject(objectConfig, x, y)
+	return GameObject(itemConfig, objectConfig)
 end
 
-function GameObject:init(itemConfig, x, y)
+function GameObject.fromConfig(objectConfig, itemConfig)
+	return GameObject(itemConfig, objectConfig)
+end
+
+function GameObject:init(itemConfig, objectConfig)
 	GameObject.super.init(self)
 	
 	local gridSize = grid.getSize()
 	-- Set properties
 	
 	self.id = itemConfig.id
-	self.config = getConfigValues(itemConfig.config)
+	
+	if objectConfig.config ~= nil then
+		self.config = objectConfig.config
+	else 
+		-- Set config values to defaults
+		self.config = getConfigValues(itemConfig.config)
+	end
 	
 	if itemConfig.size ~= nil then
 		self.size = itemConfig.size
@@ -37,14 +44,7 @@ function GameObject:init(itemConfig, x, y)
 	
 	-- Set Position 
 	
-	if x ~= nil and y ~= nil then
-		self:moveTo(grid.makeGridPosition(x, y))
-	elseif itemConfig.position ~= nil then
-		self:moveTo(grid.makeGridPosition(itemConfig.position.x, itemConfig.position.y))
-	else 
-		print("Error: No positioning data for sprite: ".. itemConfig.id)
-		return
-	end
+	self:moveTo(grid.makeGridPosition(objectConfig.position.x, objectConfig.position.y))
 	
 	-- Set Image
 	
