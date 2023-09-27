@@ -8,6 +8,12 @@ function GameObject.new(itemConfig, x, y)
 	return GameObject(itemConfig, x, y)
 end
 
+function GameObject.fromConfig(objectConfig)
+	
+	-- TODO: use common initializer variables (id, config, x, y, size...)
+	return GameObject(objectConfig, x, y)
+end
+
 function GameObject:init(itemConfig, x, y)
 	GameObject.super.init(self)
 	

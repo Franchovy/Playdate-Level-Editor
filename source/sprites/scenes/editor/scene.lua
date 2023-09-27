@@ -75,15 +75,15 @@ function editorScene.loadFromFile(fileName)
 end
 
 function editorScene.update()
-	local crankChange = playdate.getCrankTicks(180)
+	local crankChange = playdate.getCrankTicks(12)
 	
 	-- Set Draw Offset to crank change (in degrees)
 	if crankChange ~= 0 then
-		editor:goTo(editor:getOffsetX() + crankChange)
+		editor:moveByCrank(crankChange)
 	end
 	
 	-- Change item to next
-	if playdate.buttonJustPressed(playdate.kButtonB) then
+	if editor.shouldChangeItemId then
 		
 		-- Get Current Item Index
 		
@@ -111,5 +111,6 @@ function editorScene.update()
 		-- Set new item 
 		
 		editor:setCurrentItemId(currentItemId)
+		editor.shouldChangeItemId = false
 	end
 end

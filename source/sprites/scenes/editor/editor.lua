@@ -2,6 +2,7 @@ import "playdate"
 import "cursor"
 import "grid"
 import "currentGame"
+import "extensions/table"
 
 class("Editor").extends(sprite)
 
@@ -22,6 +23,8 @@ function Editor:init(config)
 	else
 		grid.setSize(defaultGridSize)
 	end
+	
+	self.cursorBorderMarginX = 2
 	
 	self.cursor = Cursor.new()
 	self.cursor:setCenter(0, 0)
@@ -52,10 +55,14 @@ function Editor:update()
 	
 	if playdate.buttonJustPressed(playdate.kButtonLeft) then
 		self.cursor:moveByGrid(-1, 0)
+		
+		self:updateOffsetForCursor()
 	end
 	
 	if playdate.buttonJustPressed(playdate.kButtonRight) then
 		self.cursor:moveByGrid(1, 0)
+		
+		self:updateOffsetForCursor()
 	end
 	
 	if playdate.buttonJustPressed(playdate.kButtonUp) then
@@ -68,20 +75,54 @@ function Editor:update()
 	
 	-- Add items
 	
-	if playdate.buttonJustPressed(playdate.kButtonA) then
-		local collisionData = {self.cursor:checkCollisions(self.cursor:getPosition())}
-		
-		if not (collisionData[4] > 0) then
+	local collisionData = {self.cursor:checkCollisions(self.cursor:getPosition())}
+	local isColliding = (collisionData[4] > 0)
+	
+	if isColliding then
+		if playdate.buttonIsPressed(playdate.kButtonB) then
+			local collisionObjects = collisionData[3]
+			local object = collisionObjects[1].other
+			
+			table.removevalue(self.objects, object)
+			object:remove()
+		end
+	else
+		if playdate.buttonIsPressed(playdate.kButtonA) then
 			local object = GameObject.new(self.item, self.cursor:getPositionGrid())
 			table.insert(self.objects, object)
 			
 			object:add()
 			object:moveTo(self.cursor:getPosition())
+		elseif playdate.buttonJustPressed(playdate.kButtonB) then
+			-- Notify scene of change
+			self.shouldChangeItemId = true
 		end
 	end
 end
 
 -- X Offset Movement
+
+function Editor:moveByCrank(changeTicks)
+	self.cursor:moveByGrid(-changeTicks, 0)
+	
+	self:updateOffsetForCursor()
+end
+
+function Editor:updateOffsetForCursor()
+	local cursorX, cursorY = self.cursor:getPosition()
+	local offsetX, offsetY = graphics.getDrawOffset()
+	local marginX, marginY = grid.makeGridPosition(self.cursorBorderMarginX, 0)
+	
+	if cursorX - (-offsetX) < marginX then
+		local drawOffsetX = cursorX - marginX
+		graphics.setDrawOffset(-drawOffsetX, 0)
+	elseif ((-offsetX) + 400) - cursorX < marginX then
+		local drawOffsetX = 400 - cursorX - marginX
+		graphics.setDrawOffset(drawOffsetX, 0)
+	end
+	
+	-- TODO: Add Y-axis handling
+end
 
 function Editor:goTo(offsetX)
 	graphics.setDrawOffset(-offsetX, 0)
@@ -96,7 +137,7 @@ end
 
 function Editor:loadObjects(objects)
 	for _, objectConfig in pairs(objects) do
-		local object = GameObject.new(objectConfig)
+		local object = GameObject.fromConfig(objectConfig)
 		table.insert(self.objects, object)
 		
 		object:add()
