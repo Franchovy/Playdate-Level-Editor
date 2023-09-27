@@ -29,6 +29,7 @@ function Editor:init(config)
 	self.cursor:moveTo(grid.makeGridPosition(3, 3))
 	
 	self.hintSprite = sprite.new()
+	self.hintSprite:setIgnoresDrawOffset(true)
 	self.hintSprite:setCenter(0, 0)
 	self.hintSprite:moveTo(25, 25)
 	self.hintSprite:add()
@@ -83,11 +84,12 @@ end
 -- X Offset Movement
 
 function Editor:goTo(offsetX)
-	graphics.setDrawOffset(offsetX, 0)
+	graphics.setDrawOffset(-offsetX, 0)
 end
 
 function Editor:getOffsetX()
-	return graphics.getDrawOffset()
+	local x, _ = graphics.getDrawOffset()
+	return -x
 end
 
 -- Objects Interface
