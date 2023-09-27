@@ -39,6 +39,12 @@ function Editor:init(config)
 end
 
 function Editor:deinit()
+	for _, object in pairs(self.objects) do
+		object:remove()
+	end
+	
+	self.objects = nil
+	
 	self.cursor:remove()
 	self.cursor = nil
 	
@@ -75,25 +81,24 @@ function Editor:update()
 	
 	-- Add items
 	
-	local collisionData = {self.cursor:checkCollisions(self.cursor:getPosition())}
-	local isColliding = (collisionData[4] > 0)
+	if playdate.buttonIsPressed(playdate.kButtonB) or playdate.buttonIsPressed(playdate.kButtonA) then
 	
-	if isColliding then
-		if playdate.buttonIsPressed(playdate.kButtonB) then
+		local collisionData = {self.cursor:checkCollisions(self.cursor:getPosition())}
+		local isColliding = (collisionData[4] > 0)
+		
+		if playdate.buttonIsPressed(playdate.kButtonB) and isColliding then
 			local collisionObjects = collisionData[3]
 			local object = collisionObjects[1].other
 			
 			table.removevalue(self.objects, object)
 			object:remove()
-		end
-	else
-		if playdate.buttonIsPressed(playdate.kButtonA) then
+		elseif playdate.buttonIsPressed(playdate.kButtonA) and not isColliding then
 			local object = GameObject.new(self.item, self.cursor:getPositionGrid())
 			table.insert(self.objects, object)
 			
 			object:add()
 			object:moveTo(self.cursor:getPosition())
-		elseif playdate.buttonJustPressed(playdate.kButtonB) then
+		elseif playdate.buttonJustPressed(playdate.kButtonB) and not isColliding then
 			-- Notify scene of change
 			self.shouldChangeItemId = true
 		end
@@ -136,8 +141,13 @@ end
 -- Objects Interface
 
 function Editor:loadObjects(objects)
+	local itemsById = {}
+	for _, item in pairs(self.items) do
+		itemsById[item.id] = item
+	end
+	
 	for _, objectConfig in pairs(objects) do
-		local object = GameObject.fromConfig(objectConfig)
+		local object = GameObject.fromConfig(objectConfig, itemsById[objectConfig.id])
 		table.insert(self.objects, object)
 		
 		object:add()
