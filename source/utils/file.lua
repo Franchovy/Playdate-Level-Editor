@@ -45,12 +45,7 @@ function exportLevel(name, gameObjects)
 		table.insert(levelObjects, itemData)
 		
 		-- Update Max X if necessary
-		local x = gameObject:getPosition()
-		local width = gameObject:getSize()
-		
-		if width + x > maxX then
-			maxX = width + x
-		end
+		maxX = getMaxX(maxX, gameObject)
 	end
 	
 	local levelData = {}
@@ -83,4 +78,15 @@ function exportLevel(name, gameObjects)
 	json.encodeToFile(path, levelData)
 	
 	print("Exported to file.")
+end
+
+function getMaxX(previousMaxX, gameObject) 
+	local x = gameObject:getPosition()
+	local width = gameObject:getSize()
+	
+	if width + x > previousMaxX then
+		return width + x
+	end
+	
+	return previousMaxX
 end

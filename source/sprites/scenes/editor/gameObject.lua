@@ -15,7 +15,10 @@ function GameObject:init(itemConfig, x, y)
 	-- Set properties
 	
 	self.id = itemConfig.id
-	self.config = itemConfig.config
+	self.config = getConfigValues(itemConfig.config)
+	
+	printTable(self.config)
+	
 	if itemConfig.size ~= nil then
 		self.size = itemConfig.size
 	else 
@@ -77,4 +80,18 @@ function GameObject:getExportData()
 	data["config"] = self.config
 	
 	return data
+end
+
+function getConfigValues(config)
+	local values = {}
+	
+	for k, v in pairs(config) do
+		if v.value ~= nil then
+			values[k] = v.value
+		elseif v.default ~= nil then
+			values[k] = v.default
+		end
+	end
+	
+	return values
 end
