@@ -17,8 +17,6 @@ function GameObject:init(itemConfig, x, y)
 	self.id = itemConfig.id
 	self.config = getConfigValues(itemConfig.config)
 	
-	printTable(self.config)
-	
 	if itemConfig.size ~= nil then
 		self.size = itemConfig.size
 	else 
