@@ -70,7 +70,7 @@ function GameObject:getImageAsset(assetPath)
 	end
 	
 	local gameId = currentGame.getGameId()
-	return graphics.image.new("assets/"..gameId.."/"..assetPath)
+	return graphics.image.new("games/"..gameId.."/assets/"..assetPath)
 end
 
 -- Export Interface

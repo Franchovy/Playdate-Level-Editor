@@ -10,7 +10,7 @@ editorScene.shouldQuit = false
 
 local hintSprite = nil
 
-local itemIds = {"platform", "killBlock", "coin"}
+local itemIds = {}
 local levelConfig = {};
 local editor;
 
@@ -18,6 +18,15 @@ function editorScene.init(gameId)
 	currentGame.setGameId(gameId)
 	
 	local gameConfig, itemsConfig = loadGameConfig(gameId)
+	
+	-- Load Item IDs
+	
+	itemIds = {}
+	for _, item in pairs(itemsConfig) do
+		table.insert(itemIds, item.id)
+	end
+	
+	-- Create Editor
 	
 	editor = Editor.new(gameConfig)
 	editor:add()

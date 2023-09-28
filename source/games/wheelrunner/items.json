@@ -1,0 +1,37 @@
+[
+	{
+		"id": "platform",
+		"config": {},
+		"assetName": "platform.png",
+		"size": { "width": 1, "height": 1 }
+	},
+	{
+		"id": "killBlock",
+		"config": {},
+		"assetName": "killBlock.png",
+		"size": { "width": 1, "height": 1 }
+	},
+	{
+		"id": "coin",
+		"config": {
+			"isPicked": {
+				"type": "boolean",
+				"default": false
+			}
+		},
+		"assetName": "coin.png",
+		"size": { "width": 1, "height": 1 }
+	},
+	{
+		"id": "player",
+		"config": {},
+		"assetName": "wheel.png",
+		"size": { "width": 2, "height": 2 }
+	},
+	{
+		"id": "levelEnd",
+		"config": {},
+		"assetName": "portal.png",
+		"size": { "width": 3, "height": 3 }
+	}
+]
