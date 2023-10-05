@@ -21,24 +21,27 @@ function exportLevel(name, gameObjects)
 	-- Destination File Path
 	
 	local game = currentGame.getGameId()
-	local path = directoryPathNameLevels.."/"..game.."/"..name
-	print("Exporting to file: ".. path.. "...")
 	
-	if not playdate.file.isdir(game) then
-		playdate.file.mkdir(game)
+	ensureDirectoryExists(directoryPathNameLevels)
+	ensureDirectoryExists(directoryPathNameLevels.."/"..game)
+	
+	encodeToFile(directoryPathNameLevels.."/"..game.."/"..name, levelData)
+end
+
+function ensureDirectoryExists(paths)
+	if not playdate.file.isdir(v) then
+		playdate.file.mkdir(v)
 	end
-	
-	if not playdate.file.isdir(directoryPathNameLevels.."/"..game) then
-		playdate.file.mkdir(directoryPathNameLevels.."/"..game)
-	end
-	
+end
+
+function getLevelObjects(path, levelData)
 	if playdate.file.exists(path) then
 		print("File already exists! Overwriting...")
 	end
 	
 	json.encodeToFile(path, levelData)
 	
-	print("Exported to file.")
+	print("Exported to file: ".. path)
 end
 
 function getLevelObjects(gameObjects)
