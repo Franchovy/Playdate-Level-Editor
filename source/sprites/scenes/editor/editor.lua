@@ -154,9 +154,18 @@ function Editor:loadObjects(objects)
 	end
 end
 
-function Editor:getObjects()
-	return self.objects
-end 
+function Editor:getObjectsExport()
+	local objects = table.deepcopy(self.objects)
+	-- TODO: Add platform efficiency
+	-- iterate over all objects
+	-- if platform: 
+	-- get platform under, if any
+	-- get platform right, if any
+	-- if both of the above, get platform under, right, if any
+	-- if any of the above, recurse (under -> under, right -> right, X under x Y right )
+	
+	return objects
+end
 
 -- Items Interface
 

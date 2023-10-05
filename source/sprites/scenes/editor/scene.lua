@@ -34,7 +34,7 @@ function editorScene.init(gameId)
 	-- Playdate Menu options
 	
 	local fileName = "level.json"
-	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(fileName, editor:getObjects()) end)
+	playdate.getSystemMenu():addMenuItem("Export", function() exportLevel(fileName, editor:getObjectsExport()) end)
 	playdate.getSystemMenu():addMenuItem("Main Menu", function() editorScene.shouldQuit = true end)
 	
 	-- Items
