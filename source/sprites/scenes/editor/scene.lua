@@ -2,7 +2,7 @@ import "currentGame"
 import "editor"
 import "gameObject"
 import "utils/config"
-import "utils/file"
+import "utils/file/file"
 
 editorScene = {}
 editorScene.isInitialized = false

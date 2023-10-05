@@ -1,6 +1,6 @@
 import "background"
 import "menuOptions"
-import "utils/file"
+import "utils/file/file"
 
 menuScene = {}
 menuScene.isInitialized = false

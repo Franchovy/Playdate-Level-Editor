@@ -1,5 +1,5 @@
 import "playdate"
-import "utils/file"
+import "utils/file/file"
 import "sprites/sprites"
 
 function main()
