@@ -28,13 +28,13 @@ function exportLevel(name, gameObjects)
 	encodeToFile(directoryPathNameLevels.."/"..game.."/"..name, levelData)
 end
 
-function ensureDirectoryExists(paths)
-	if not playdate.file.isdir(v) then
-		playdate.file.mkdir(v)
+function ensureDirectoryExists(path)
+	if not playdate.file.isdir(path) then
+		playdate.file.mkdir(path)
 	end
 end
 
-function getLevelObjects(path, levelData)
+function encodeToFile(path, levelData)
 	if playdate.file.exists(path) then
 		print("File already exists! Overwriting...")
 	end

@@ -3,6 +3,7 @@ import "cursor"
 import "grid"
 import "currentGame"
 import "extensions/table"
+import "utils/spritecycler/spritecycler"
 
 class("Editor").extends(sprite)
 
@@ -95,6 +96,7 @@ function Editor:update()
 		elseif playdate.buttonIsPressed(playdate.kButtonA) and not isColliding then
 			local object = GameObject.new(self.item, self.cursor:getPositionGrid())
 			table.insert(self.objects, object)
+			self.spriteCycler:addObject(object)
 			
 			object:add()
 			object:moveTo(self.cursor:getPosition())
@@ -155,7 +157,7 @@ function Editor:loadObjects(objects)
 end
 
 function Editor:getObjectsExport()
-	local objects = table.deepcopy(self.objects)
+	--local objects = table.deepcopy(self.objects) -- Warning: Need to copy only position data/config, not entire object 
 	-- TODO: Add platform efficiency
 	-- iterate over all objects
 	-- if platform: 
@@ -164,7 +166,7 @@ function Editor:getObjectsExport()
 	-- if both of the above, get platform under, right, if any
 	-- if any of the above, recurse (under -> under, right -> right, X under x Y right )
 	
-	return objects
+	return self.objects
 end
 
 -- Items Interface
