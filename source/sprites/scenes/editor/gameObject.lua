@@ -4,6 +4,11 @@ import "currentGame"
 
 class("GameObject").extends(sprite)
 
+function GameObject.new2(config, position)
+	itemConfig:getConfig(config.id)
+	return GameObject(itemConfig, objectConfig)
+end
+
 function GameObject.new(itemConfig, x, y)
 	local position = { x = x, y = y }
 	local objectConfig = { position = position }

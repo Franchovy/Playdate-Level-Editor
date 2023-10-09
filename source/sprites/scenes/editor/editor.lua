@@ -3,7 +3,7 @@ import "cursor"
 import "grid"
 import "currentGame"
 import "extensions/table"
-import "utils/spritecycler/spritecycler"
+import "sprites/level"
 
 class("Editor").extends(sprite)
 
@@ -37,6 +37,8 @@ function Editor:init(config)
 	self.hintSprite:setCenter(0, 0)
 	self.hintSprite:moveTo(25, 25)
 	self.hintSprite:add()
+	
+	self.level = Level()
 end
 
 function Editor:deinit()
@@ -84,6 +86,19 @@ function Editor:update()
 	
 	if playdate.buttonIsPressed(playdate.kButtonB) or playdate.buttonIsPressed(playdate.kButtonA) then
 	
+		local objectExisting = self.level:objectAt(self.cursor:getPosition())
+		if objectExisting == nil then
+			if playdate.buttonIsPressed(playdate.kButtonB) then
+				self.level:removeObject(objectExisting)
+			elseif playdate.buttonIsPressed(playdate.kButtonA) then
+				local config = self.item
+				local position = self.cursor:getPositionGrid()
+				self.level:addObject(config, position)
+			end
+		elseif playdate.buttonIsPressed(playdate.kButtonB) then
+			self.shouldChangeItemId = true
+		end
+	
 		local collisionData = {self.cursor:checkCollisions(self.cursor:getPosition())}
 		local isColliding = (collisionData[4] > 0)
 		
@@ -96,13 +111,12 @@ function Editor:update()
 		elseif playdate.buttonIsPressed(playdate.kButtonA) and not isColliding then
 			local object = GameObject.new(self.item, self.cursor:getPositionGrid())
 			table.insert(self.objects, object)
-			self.spriteCycler:addObject(object)
 			
 			object:add()
 			object:moveTo(self.cursor:getPosition())
 		elseif playdate.buttonJustPressed(playdate.kButtonB) and not isColliding then
 			-- Notify scene of change
-			self.shouldChangeItemId = true
+			self.item = self:nextItem()
 		end
 	end
 end
@@ -149,10 +163,10 @@ function Editor:loadObjects(objects)
 	end
 	
 	for _, objectConfig in pairs(objects) do
-		local object = GameObject.fromConfig(objectConfig, itemsById[objectConfig.id])
-		table.insert(self.objects, object)
+		local config = itemsById[objectConfig.id]
+		local position = objectConfig.position
 		
-		object:add()
+		level:addObject(config, position)
 	end
 end
 
@@ -166,10 +180,20 @@ function Editor:getObjectsExport()
 	-- if both of the above, get platform under, right, if any
 	-- if any of the above, recurse (under -> under, right -> right, X under x Y right )
 	
-	return self.objects
+	return self.level:getObjects()
 end
 
 -- Items Interface
+
+
+-- WIP: 
+-- Migrate references to "items" from here into "items" singleton
+-- Only keep hold of items id. Loop through using index and size of items array.
+-- Pass item id into config for gameobject. GameObject fetches config on its own. use .new2() for dev.
+
+function Editor:nextItem()
+	local items = items.getItems()
+end
 
 function Editor:addItems(items)
 	self.items = items
