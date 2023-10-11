@@ -1,19 +1,12 @@
 import "playdate"
 import "grid"
 import "currentGame"
+import "utils/items"
 
 class("GameObject").extends(sprite)
 
-function GameObject.new2(config, position)
-	itemConfig:getConfig(config.id)
-	return GameObject(itemConfig, objectConfig)
-end
-
-function GameObject.new(itemConfig, x, y)
-	local position = { x = x, y = y }
-	local objectConfig = { position = position }
-	
-	return GameObject(itemConfig, objectConfig)
+function GameObject.new(item, position)
+	return GameObject(item, { position = position })
 end
 
 function GameObject.fromConfig(objectConfig, itemConfig)

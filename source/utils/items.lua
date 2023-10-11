@@ -36,13 +36,13 @@ end
 SItems = Items()
 
 function SItems.loadItemsConfig(...) 
-	Items.loadItemsConfig(SItems, ...)
+	return Items.loadItemsConfig(SItems, ...)
 end
 
 function SItems.getItems(...) 
-	Items.getItems(SItems, ...)
+	return Items.getItems(SItems, ...)
 end
 
 function SItems.getItemById(...) 
-	Items.getItemById(SItems, ...)
+	return Items.getItemById(SItems, ...)
 end

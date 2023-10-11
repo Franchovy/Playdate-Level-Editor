@@ -82,7 +82,7 @@ function Editor:update()
 		self.cursor:moveByGrid(0, 1)
 	end
 	
-	-- Add object
+	-- Add or Remove Object
 	
 	if playdate.buttonIsPressed(playdate.kButtonB) or playdate.buttonIsPressed(playdate.kButtonA) then
 	
@@ -91,9 +91,9 @@ function Editor:update()
 			if playdate.buttonIsPressed(playdate.kButtonB) then
 				self.level:removeObject(objectExisting)
 			elseif playdate.buttonIsPressed(playdate.kButtonA) then
-				local config = self.item
-				local position = self.cursor:getPositionGrid()
-				self.level:addObject(config, position)
+				local x, y = self.cursor:getPositionGrid()
+				local position = { x = x, y = y }
+				self.level:addObject(self.item, position)
 			end
 		elseif playdate.buttonIsPressed(playdate.kButtonB) then
 			self.shouldChangeItemId = true
@@ -115,8 +115,7 @@ function Editor:update()
 			object:add()
 			object:moveTo(self.cursor:getPosition())
 		elseif playdate.buttonJustPressed(playdate.kButtonB) and not isColliding then
-			-- Notify scene of change
-			self.item = self:nextItem()
+			self:nextItem()
 		end
 	end
 end
@@ -161,7 +160,7 @@ function Editor:loadObjects(objects)
 		local config = SItems.getItemById(objectConfig.id)
 		local position = objectConfig.position
 		
-		level:addObject(config, position)
+		self.level:addObject(config, position)
 	end
 end
 
@@ -192,6 +191,7 @@ function Editor:nextItem()
 		if v.id == self.item.id then
 			local targetIndex = (i % #items) + 1
 			self.item = items[targetIndex]
+			self:renderCurrentItem()
 			return
 		end
 	end
@@ -202,10 +202,14 @@ function Editor:getCurrentItemId()
 end
 
 function Editor:setCurrentItemById(id)
-	-- Draw name of current item 
+	self.item = SItems.getItemById(id)
+	
+	self:renderCurrentItem()
+end
+
+function Editor:renderCurrentItem()
+	local id = self.item.id
 	local hintTextImage = graphics.imageWithText(id, 150, 25)
 	self.hintSprite:setSize(hintTextImage:getSize())
 	self.hintSprite:setImage(hintTextImage)
-	
-	self.item = SItems.getItemById(id) -- todo
 end
