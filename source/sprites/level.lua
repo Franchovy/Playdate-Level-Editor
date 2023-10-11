@@ -4,7 +4,7 @@ function Level:init()
 	self.objects = {}
 end
 
-function Level:itemAt(x, y)
+function Level:objectAt(x, y)
 	-- Return item at (x, y), if any.
 end
 

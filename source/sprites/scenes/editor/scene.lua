@@ -11,7 +11,6 @@ editorScene.shouldQuit = false
 
 local hintSprite = nil
 
-local itemIds = {}
 local levelConfig = {};
 local editor;
 
@@ -19,7 +18,6 @@ function editorScene.init(gameId)
 	currentGame.setGameId(gameId)
 	
 	local gameConfig, itemsConfig = loadGameConfig(gameId)
-	items.loadItemsConfig(itemsConfig)
 	
 	-- Create Editor
 	
@@ -34,8 +32,8 @@ function editorScene.init(gameId)
 	
 	-- Items
 	
-	editor:addItems(itemsConfig)
-	editor:setCurrentItemId("platform")
+	SItems.loadItemsConfig(itemsConfig)
+	editor:setCurrentItemById(itemsConfig[1].id)
 	
 	-- Set Initialized
 	

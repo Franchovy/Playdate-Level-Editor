@@ -4,6 +4,7 @@ import "grid"
 import "currentGame"
 import "extensions/table"
 import "sprites/level"
+import "utils/items"
 
 class("Editor").extends(sprite)
 
@@ -14,7 +15,6 @@ end
 function Editor:init(config) 
 	Editor.super.init(self)
 	
-	self.items = {}
 	self.item = nil
 	self.objects = {}
 	
@@ -82,7 +82,7 @@ function Editor:update()
 		self.cursor:moveByGrid(0, 1)
 	end
 	
-	-- Add items
+	-- Add object
 	
 	if playdate.buttonIsPressed(playdate.kButtonB) or playdate.buttonIsPressed(playdate.kButtonA) then
 	
@@ -157,13 +157,8 @@ end
 -- Objects Interface
 
 function Editor:loadObjects(objects)
-	local itemsById = {}
-	for _, item in pairs(self.items) do
-		itemsById[item.id] = item
-	end
-	
 	for _, objectConfig in pairs(objects) do
-		local config = itemsById[objectConfig.id]
+		local config = SItems.getItemById(objectConfig.id)
 		local position = objectConfig.position
 		
 		level:addObject(config, position)
@@ -192,26 +187,25 @@ end
 -- Pass item id into config for gameobject. GameObject fetches config on its own. use .new2() for dev.
 
 function Editor:nextItem()
-	local items = items.getItems()
-end
-
-function Editor:addItems(items)
-	self.items = items
+	local items = SItems.getItems()
+	for i, v in ipairs(items) do
+		if v.id == self.item.id then
+			local targetIndex = (i % #items) + 1
+			self.item = items[targetIndex]
+			return
+		end
+	end
 end
 
 function Editor:getCurrentItemId()
 	return self.item.id
 end
 
-function Editor:setCurrentItemId(id)
+function Editor:setCurrentItemById(id)
+	-- Draw name of current item 
 	local hintTextImage = graphics.imageWithText(id, 150, 25)
 	self.hintSprite:setSize(hintTextImage:getSize())
 	self.hintSprite:setImage(hintTextImage)
 	
-	for _, v in pairs(self.items) do
-		if v.id == id then
-			self.item = v
-			return
-		end
-	end
+	self.item = SItems.getItemById(id) -- todo
 end
