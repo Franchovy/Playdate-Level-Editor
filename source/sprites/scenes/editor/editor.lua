@@ -86,36 +86,22 @@ function Editor:update()
 	
 	if playdate.buttonIsPressed(playdate.kButtonB) or playdate.buttonIsPressed(playdate.kButtonA) then
 	
-		local objectExisting = self.level:objectAt(self.cursor:getPosition())
+		local x, y = self.cursor:getPositionGrid()
+		local position = { x = x, y = y }
+		
+		local objectExisting = self.level:objectAt({x = x, y = y})
 		if objectExisting == nil then
-			if playdate.buttonIsPressed(playdate.kButtonB) then
-				self.level:removeObject(objectExisting)
+			
+			if playdate.buttonJustPressed(playdate.kButtonB) then
+				self:nextItem()
 			elseif playdate.buttonIsPressed(playdate.kButtonA) then
-				local x, y = self.cursor:getPositionGrid()
-				local position = { x = x, y = y }
-				self.level:addObject(self.item, position)
+				-- Ensure the item to be placed does not overlap with any other items
+				if self.level:objectOverlaps({x = x, y = y}, self.item.size) == false then
+					self.level:addObject(self.item, position)
+				end
 			end
 		elseif playdate.buttonIsPressed(playdate.kButtonB) then
-			self.shouldChangeItemId = true
-		end
-	
-		local collisionData = {self.cursor:checkCollisions(self.cursor:getPosition())}
-		local isColliding = (collisionData[4] > 0)
-		
-		if playdate.buttonIsPressed(playdate.kButtonB) and isColliding then
-			local collisionObjects = collisionData[3]
-			local object = collisionObjects[1].other
-			
-			table.removevalue(self.objects, object)
-			object:remove()
-		elseif playdate.buttonIsPressed(playdate.kButtonA) and not isColliding then
-			local object = GameObject.new(self.item, self.cursor:getPositionGrid())
-			table.insert(self.objects, object)
-			
-			object:add()
-			object:moveTo(self.cursor:getPosition())
-		elseif playdate.buttonJustPressed(playdate.kButtonB) and not isColliding then
-			self:nextItem()
+			self.level:removeObject(objectExisting, position, objectExisting.size)
 		end
 	end
 end
