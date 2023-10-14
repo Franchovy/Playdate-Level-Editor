@@ -29,7 +29,7 @@ function Level:objectAt(position)
 	return nil
 end
 
-function Level:objectOverlaps(position, size)
+function Level:hasObjectAt(position, size)
 	for i=0, size.width-1 do
 		local x = position.x + i
 		for j=0, size.height-1 do

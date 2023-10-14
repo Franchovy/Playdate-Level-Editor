@@ -96,7 +96,7 @@ function Editor:update()
 				self:nextItem()
 			elseif playdate.buttonIsPressed(playdate.kButtonA) then
 				-- Ensure the item to be placed does not overlap with any other items
-				if self.level:objectOverlaps({x = x, y = y}, self.item.size) == false then
+				if self.level:hasObjectAt({x = x, y = y}, self.item.size) == false then
 					self.level:addObject(self.item, position)
 				end
 			end
