@@ -33,5 +33,16 @@
 		"config": {},
 		"assetName": "portal.png",
 		"size": { "width": 3, "height": 3 }
+	},
+	{
+		"id": "checkpoint",
+		"config": {
+			"isSet": {
+				"type": "boolean",
+				"default": false
+			}
+		},
+		"assetName": "checkpoint.png",
+		"size": {"width": 1, "height": 2}
 	}
 ]
