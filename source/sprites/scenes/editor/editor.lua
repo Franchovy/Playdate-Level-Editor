@@ -93,10 +93,24 @@ function Editor:update()
 		if objectExisting == nil then
 			
 			if playdate.buttonJustPressed(playdate.kButtonB) then
-				self:nextItem()
+				-- Cycle through possible items, skipping ones that reached their max count.
+				repeat
+					self:nextItem()
+				until self.item.count == nil or self.level:getItemCount(self.item.id) < self.item.count
 			elseif playdate.buttonIsPressed(playdate.kButtonA) then
+				local canPlaceItem = true
+				
 				-- Ensure the item to be placed does not overlap with any other items
-				if self.level:hasObjectAt({x = x, y = y}, self.item.size) == false then
+				if self.level:hasObjectAt({x = x, y = y}, self.item.size) then
+					canPlaceItem = false
+				end
+				
+				-- Ensure item does not exceed the item count
+				if self.item.count ~= nil and self.level:getItemCount(self.item.id) >= self.item.count then
+					canPlaceItem = false
+				end
+				
+				if canPlaceItem then
 					self.level:addObject(self.item, position)
 				end
 			end

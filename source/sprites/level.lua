@@ -3,6 +3,7 @@ class("Level").extends()
 function Level:init()
 	self.objects = {}
 	self.objectsByPosition = {}
+	self.itemCountById = {}
 end
 
 function Level:_positionDataAt(position)
@@ -48,6 +49,7 @@ function Level:addObject(item, position)
 	table.insert(self.objects, object)
 	
 	self:addObjectByPosition(object, position, item.size)
+	self:incrementObjectCount(item.id)
 	
 	object:add()
 end
@@ -90,6 +92,8 @@ function Level:removeObject(object, position, size)
 	local positionData = self:_positionDataAt(position)
 	local origin = positionData.origin
 	
+	self:decrementObjectCount(object.id)
+	
 	-- Remove object from all possible positions
 	
 	for i=0, size.width - 1 do
@@ -105,4 +109,22 @@ end
 
 function Level:getObjects()
 	return self.objects
+end
+
+function Level:getItemCount(itemId)
+	return self.itemCountById[itemId]
+end
+
+function Level:incrementObjectCount(itemId)
+	if self.itemCountById[itemId] == nil then
+		self.itemCountById[itemId] = 1
+	else
+		self.itemCountById[itemId] += 1
+	end
+end
+
+function Level:decrementObjectCount(itemId)
+	assert(self.itemCountById[itemId] ~= nil)
+	
+	self.itemCountById[itemId] -= 1
 end

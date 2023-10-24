@@ -26,12 +26,14 @@
 		"id": "player",
 		"config": {},
 		"assetName": "wheel.png",
+		"count": 1,
 		"size": { "width": 2, "height": 2 }
 	},
 	{
 		"id": "levelEnd",
 		"config": {},
 		"assetName": "portal.png",
+		"count": 1,
 		"size": { "width": 3, "height": 3 }
 	},
 	{
@@ -42,6 +44,7 @@
 				"default": false
 			}
 		},
+		"count": 3,
 		"assetName": "checkpoint.png",
 		"size": {"width": 1, "height": 2}
 	}
