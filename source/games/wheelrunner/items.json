@@ -3,7 +3,11 @@
 		"id": "platform",
 		"config": {},
 		"assetName": "platform.png",
-		"size": { "width": 1, "height": 1 }
+		"size": { "width": 1, "height": 1 },
+		"editorConfig": {
+			"mergeToCollision": true,
+			"collisionId": "platformCollision"
+		}
 	},
 	{
 		"id": "killBlock",

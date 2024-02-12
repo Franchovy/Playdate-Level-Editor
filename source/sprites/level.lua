@@ -107,6 +107,44 @@ function Level:removeObject(object, position, size)
 	end
 end
 
+function Level:buildCollisionObjects()
+	for id, objects in pairs(self:getObjectsById()) do
+		-- retrieve item associated to this id and check if it should produce collision objects
+		local item = SItems.getItemById(id)
+		if item.editorConfig ~= nil and item.mergeToCollision then
+			self:_addCollisionObjects(objects, item.collisionId)
+		end
+	end
+end
+
+function Level:_addCollisionObjects(objects, collisionObjectId)
+	table.sort(objects, function (a, b)
+		-- sort by x position
+		if a.x < b.x then return true
+		elseif a.x > b.x then return false
+		-- if equal, the one that is above comes first
+		else
+			if a.y < b.y then return true
+			else return false end
+		end
+	end)
+
+end
+
+function Level:getObjectsById()
+	local objectsById = {}
+
+	for _, object in pairs(self:getObjects()) do
+		if objectsById[object.id] == nil then
+			objectsById[object.id] = {}
+		end
+
+		table.insert(objectsById[object.id], object)
+	end
+
+	return objectsById
+end
+
 function Level:getObjects()
 	return self.objects
 end
