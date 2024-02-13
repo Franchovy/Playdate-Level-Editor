@@ -107,17 +107,68 @@ function Level:removeObject(object, position, size)
 	end
 end
 
+function Level:postprocessing()
+	self:buildCollisionObjects()
+end
+
 function Level:buildCollisionObjects()
 	for id, objects in pairs(self:getObjectsById()) do
 		-- retrieve item associated to this id and check if it should produce collision objects
 		local item = SItems.getItemById(id)
 		if item.editorConfig ~= nil and item.mergeToCollision then
-			self:_addCollisionObjects(objects, item.collisionId)
+			local rects = self:_createRects(objects)
+			local itemConfigs = self:_createCollisionItems(rects, item.editorConfig.collisionId)
+			self:_addCollisionsAsObjects(rects, itemConfigs)
 		end
 	end
 end
 
-function Level:_addCollisionObjects(objects, collisionObjectId)
+function Level:_createRects(objects)
+	-- some internal functions
+	local nextObjHorizontal = function(objects, baseX, baseY, grouped)
+		for _, obj in pairs(objects) do
+			if obj.y ~= baseY then goto continue end
+			if obj.x - baseX > 1 then return nil end
+			if grouped[obj] then goto continue end
+			
+			do return obj end
+
+			::continue::
+		end
+		return nil
+	end
+
+	-- still ...
+	local nextObjVertical = function(objects, baseX, baseY, grouped)
+		for _, obj in pairs(objects) do
+			if obj.x > baseX then return nil end
+			if obj.y - baseY > 1 then return nil
+			elseif not grouped[obj] then return obj
+			else return end
+		end 
+
+		return nil
+	end
+
+	-- again ...
+	local createRect = function(start, finish)
+		if start.x == finish.x then
+			return {x=start.x, y=start.y, w=1, h=finish.y - start.y + 1}
+		else
+			return {x=start.x, y=start.y, w=finish.x-start.x+1, h=1}
+		end
+	end
+
+	local tableFind = function(collection, obj)
+		for i, value in pairs(collection) do
+			if obj == value then return i end
+		end
+
+		return nil
+	end
+
+	-- function start here
+	-- sort by increasing x and if x are equal by increasing y (top to bottom)
 	table.sort(objects, function (a, b)
 		-- sort by x position
 		if a.x < b.x then return true
@@ -127,8 +178,80 @@ function Level:_addCollisionObjects(objects, collisionObjectId)
 			if a.y < b.y then return true
 			else return false end
 		end
+		
 	end)
 
+	local grouped = {}
+	local rects = {}
+
+	for i, obj in ipairs(objects) do
+		if grouped[obj] then goto continue end
+
+		if i == #objects then
+			table.insert(rects, createRect(obj, obj))
+			break
+		end
+
+		grouped[obj] = true
+
+		local finish = obj
+		while true do
+			local sliceStart = tableFind(objects, finish)+1
+			if sliceStart > #objects then break end
+
+			local nextObj = nextObjHorizontal({table.unpack(objects, sliceStart)}, finish.x, finish.y, grouped)
+			if not nextObj then break end
+			finish = nextObj
+			grouped[finish] = true
+		end
+
+		if finish ~= obj then
+			table.insert(rects, createRect(obj, finish))
+			goto continue
+		end
+
+		while true do
+			local sliceStart = tableFind(objects, finish)+1
+			if sliceStart > #objects then break end
+
+			local nextObj = nextObjVertical({table.unpack(objects, sliceStart)}, finish.x, finish.y, grouped)
+			if not nextObj then break end
+			finish = nextObj
+			grouped[finish] = true
+		end
+
+		table.insert(rects, createRect(obj, finish))
+
+		::continue::
+	end
+
+	return rects
+end
+
+-- build item configs for the collisions as if they are in items.json, trickery 🎭
+function Level:_createCollisionItems(rects, itemId)
+	local fakeItems = {}
+	for _, rect in pairs(rects) do
+		table.insert(fakeItems, 
+		{
+			id=itemId,
+			config={
+				w=rect.w,
+				h=rect.h,
+			},
+			size={
+				width=rect.w,
+				height=rect.h,
+			}
+		})
+	end
+	return fakeItems
+end
+
+function Level:_addCollisionsAsObjects(rects, itemConfigs)
+	for i=1,#rects do
+		self:addObject(itemConfigs[i], {x=rects[i].x, y=rects[i].y})
+	end
 end
 
 function Level:getObjectsById()
