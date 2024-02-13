@@ -173,7 +173,7 @@ function Editor:getObjectsExport()
 	-- get platform right, if any
 	-- if both of the above, get platform under, right, if any
 	-- if any of the above, recurse (under -> under, right -> right, X under x Y right )
-	
+
 	self.level:postprocessing()
 	return self.level:getObjects()
 end

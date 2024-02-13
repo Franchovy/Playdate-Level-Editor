@@ -71,11 +71,15 @@ function GameObject:getImageAsset(assetPath)
 	return graphics.image.new("games/"..gameId.."/assets/"..assetPath)
 end
 
+function GameObject:getGridPosition()
+	return grid.getGridPosition(self:getPosition())
+end
+
 -- Export Interface
 
 function GameObject:getExportData()
 	local data = {}
-	local x, y = grid.getGridPosition(self:getPosition())
+	local x, y = self:getGridPosition()
 	
 	data["id"] = self.id
 	data["position"] = { x = x, y = y }

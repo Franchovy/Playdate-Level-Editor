@@ -55,8 +55,6 @@ function Level:addObject(item, position)
 end
 
 function Level:addObjectByPosition(object, position, size)
-	print("Adding object: ")
-	
 	-- Add object to origin position
 	
 	local objectData = {
@@ -108,6 +106,7 @@ function Level:removeObject(object, position, size)
 end
 
 function Level:postprocessing()
+	print("Running postprocessing")
 	self:buildCollisionObjects()
 end
 
@@ -115,8 +114,11 @@ function Level:buildCollisionObjects()
 	for id, objects in pairs(self:getObjectsById()) do
 		-- retrieve item associated to this id and check if it should produce collision objects
 		local item = SItems.getItemById(id)
-		if item.editorConfig ~= nil and item.mergeToCollision then
+
+		if item.editorConfig ~= nil and item.editorConfig.mergeToCollision then
+			print("Creating collisions for " .. id)
 			local rects = self:_createRects(objects)
+			print("Built " .. #rects .. " rects")
 			local itemConfigs = self:_createCollisionItems(rects, item.editorConfig.collisionId)
 			self:_addCollisionsAsObjects(rects, itemConfigs)
 		end
@@ -127,8 +129,8 @@ function Level:_createRects(objects)
 	-- some internal functions
 	local nextObjHorizontal = function(objects, baseX, baseY, grouped)
 		for _, obj in pairs(objects) do
-			if obj.y ~= baseY then goto continue end
-			if obj.x - baseX > 1 then return nil end
+			if obj.gridPosition.y ~= baseY then goto continue end
+			if obj.gridPosition.x - baseX > 1 then return nil end
 			if grouped[obj] then goto continue end
 			
 			do return obj end
@@ -141,8 +143,8 @@ function Level:_createRects(objects)
 	-- still ...
 	local nextObjVertical = function(objects, baseX, baseY, grouped)
 		for _, obj in pairs(objects) do
-			if obj.x > baseX then return nil end
-			if obj.y - baseY > 1 then return nil
+			if obj.gridPosition.x > baseX then return nil end
+			if obj.gridPosition.y - baseY > 1 then return nil
 			elseif not grouped[obj] then return obj
 			else return end
 		end 
@@ -152,10 +154,10 @@ function Level:_createRects(objects)
 
 	-- again ...
 	local createRect = function(start, finish)
-		if start.x == finish.x then
-			return {x=start.x, y=start.y, w=1, h=finish.y - start.y + 1}
+		if start.gridPosition.x == finish.gridPosition.x then
+			return {x=start.gridPosition.x, y=start.gridPosition.y, w=1, h=finish.gridPosition.y - start.gridPosition.y + 1}
 		else
-			return {x=start.x, y=start.y, w=finish.x-start.x+1, h=1}
+			return {x=start.gridPosition.x, y=start.gridPosition.y, w=finish.gridPosition.x-start.gridPosition.x+1, h=1}
 		end
 	end
 
@@ -168,14 +170,21 @@ function Level:_createRects(objects)
 	end
 
 	-- function start here
+
+	-- first we need the grid position of every object
+	for _, obj in pairs(objects) do
+		local x, y = obj:getGridPosition()
+		obj.gridPosition = {x=x, y=y}
+	end
+
 	-- sort by increasing x and if x are equal by increasing y (top to bottom)
 	table.sort(objects, function (a, b)
 		-- sort by x position
-		if a.x < b.x then return true
-		elseif a.x > b.x then return false
+		if a.gridPosition.x < b.gridPosition.x then return true
+		elseif a.gridPosition.x > b.gridPosition.x then return false
 		-- if equal, the one that is above comes first
 		else
-			if a.y < b.y then return true
+			if a.gridPosition.y < b.gridPosition.y then return true
 			else return false end
 		end
 		
@@ -199,7 +208,7 @@ function Level:_createRects(objects)
 			local sliceStart = tableFind(objects, finish)+1
 			if sliceStart > #objects then break end
 
-			local nextObj = nextObjHorizontal({table.unpack(objects, sliceStart)}, finish.x, finish.y, grouped)
+			local nextObj = nextObjHorizontal({table.unpack(objects, sliceStart)}, finish.gridPosition.x, finish.gridPosition.y, grouped)
 			if not nextObj then break end
 			finish = nextObj
 			grouped[finish] = true
@@ -214,7 +223,7 @@ function Level:_createRects(objects)
 			local sliceStart = tableFind(objects, finish)+1
 			if sliceStart > #objects then break end
 
-			local nextObj = nextObjVertical({table.unpack(objects, sliceStart)}, finish.x, finish.y, grouped)
+			local nextObj = nextObjVertical({table.unpack(objects, sliceStart)}, finish.gridPosition.x, finish.gridPosition.y, grouped)
 			if not nextObj then break end
 			finish = nextObj
 			grouped[finish] = true
@@ -236,8 +245,8 @@ function Level:_createCollisionItems(rects, itemId)
 		{
 			id=itemId,
 			config={
-				w=rect.w,
-				h=rect.h,
+				w={type="number", value=rect.w},
+				h={type="number", value=rect.h},
 			},
 			size={
 				width=rect.w,
@@ -251,6 +260,7 @@ end
 function Level:_addCollisionsAsObjects(rects, itemConfigs)
 	for i=1,#rects do
 		self:addObject(itemConfigs[i], {x=rects[i].x, y=rects[i].y})
+		print("Added collision box")
 	end
 end
 
